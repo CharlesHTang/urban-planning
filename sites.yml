@@ -1,0 +1,15 @@
+sites:
+  - name: aecom
+    projects_url: https://aecom.com/projects/
+    adapter: architecture_scraper.adapters.sites.aecom:AecomAdapter
+
+    # AECOM exposes both its listing and detail HTML without browser rendering.
+    listing_render: never
+    detail_render: never
+
+    # One request begins every half-second, with at most five fetch tasks alive.
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 45
+    impersonate: chrome
+
