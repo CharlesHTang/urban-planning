@@ -1,0 +1,19 @@
+sites:
+  - name: example-architects
+    # This is the one URL you already know.
+    projects_url: https://example.com/projects
+
+    # capture_only saves the complete projects-page HTML and discovers no links.
+    # Later this can be replaced with module.path:AdapterClass for custom behavior.
+    adapter: capture_only
+
+    # never = curl_cffi; always = Playwright; auto = curl_cffi with browser
+    # fallback only when the HTTP request fails.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 30
+    impersonate: chrome
+
