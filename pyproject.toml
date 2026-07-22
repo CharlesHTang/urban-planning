@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "architecture-scraper"
+version = "0.1.0"
+description = "A small, configurable scraper for architectural project websites"
+requires-python = ">=3.11"
+dependencies = [
+    "curl-cffi>=0.13,<1",
+    "playwright>=1.55,<2",
+    "PyYAML>=6,<7",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+architecture-scraper = "architecture_scraper.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
