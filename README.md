@@ -41,6 +41,13 @@ Then run:
 venv/bin/architecture-scraper collect sites.yml -o raw-pages
 ```
 
+By default, `collect` runs every site in the configuration. To run only one
+configured site, select it by its `name`:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site aecom -o raw-pages
+```
+
 `capture_only` retrieves the entire projects page and does no parsing. Output is
 organized as:
 

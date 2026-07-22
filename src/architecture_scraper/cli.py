@@ -18,7 +18,7 @@ async def _run(args: argparse.Namespace) -> int:
     sites = load_sites(args.config)
     with PageStore(args.output) as store:
         if args.command == "collect":
-            return await _collect_sites(sites, store)
+            return await _collect_sites(_select_sites(sites, args.site), store)
 
         site = _find_site(sites, args.site)
         urls = _read_urls(args.urls)
@@ -54,6 +54,12 @@ def _find_site(sites: list[SiteConfig], name: str) -> SiteConfig:
         raise ValueError(f"No site named {name!r} in the configuration") from error
 
 
+def _select_sites(
+    sites: list[SiteConfig], name: str | None
+) -> list[SiteConfig]:
+    return [_find_site(sites, name)] if name else sites
+
+
 def _read_urls(path: Path) -> list[str]:
     return [
         line.strip()
@@ -72,6 +78,10 @@ def _parse_args() -> argparse.Namespace:
         "collect", help="Run each adapter and fetch any URLs it discovers"
     )
     _common_arguments(collect)
+    collect.add_argument(
+        "--site",
+        help="Collect only the configured site with this name",
+    )
 
     details = subparsers.add_parser(
         "fetch-details", help="Fetch raw detail pages from a newline-delimited URL file"
