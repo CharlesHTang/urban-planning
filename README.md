@@ -127,6 +127,22 @@ AECOM currently publishes well over one thousand project pages, so a complete
 run will take time. Successful detail responses are saved immediately; an
 individual failed detail request is reported without discarding other pages.
 
+## WSP Global
+
+The WSP adapter discovers `en-gl` project detail URLs from WSP's public sitemap.
+This avoids the Cloudflare-protected interactive projects index. WSP's robots
+policy specifies a three-second crawl delay, which is reflected in `sites.yml`.
+
+Run only WSP with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site wsp -o raw-pages
+```
+
+The adapter stores the source sitemap as the listing record, writes the
+discovered URLs to `raw-pages/wsp/project_urls.txt`, and saves complete detail
+HTML under `raw-pages/wsp/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.

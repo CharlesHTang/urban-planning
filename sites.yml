@@ -13,3 +13,16 @@ sites:
     timeout: 45
     impersonate: chrome
 
+  - name: wsp
+    projects_url: https://www.wsp.com/en-gl/projects#sort=date%20descending
+    adapter: architecture_scraper.adapters.sites.wsp:WspAdapter
+
+    # WSP's sitemap and detail pages are available through ordinary HTTP.
+    listing_render: never
+    detail_render: never
+
+    # WSP's robots.txt specifies a three-second crawl delay.
+    concurrency: 3
+    request_delay: 3
+    timeout: 60
+    impersonate: safari
