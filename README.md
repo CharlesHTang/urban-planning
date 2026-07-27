@@ -175,6 +175,22 @@ The listing pages are saved under `raw-pages/jacobs/listing/`, discovered URLs
 are written to `raw-pages/jacobs/project_urls.txt`, and complete detail HTML is
 saved under `raw-pages/jacobs/detail/`.
 
+## AtkinsRéalis
+
+The AtkinsRéalis adapter paginates through the public GET API behind the
+global-English project grid. It validates the returned project links and
+downloads each complete detail page using Safari-impersonated HTTP requests.
+
+Run only AtkinsRéalis with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site atkinsrealis -o raw-pages
+```
+
+The projects page is stored as the listing record, discovered URLs are written
+to `raw-pages/atkinsrealis/project_urls.txt`, and complete detail HTML is saved
+under `raw-pages/atkinsrealis/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.

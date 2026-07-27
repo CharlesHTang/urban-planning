@@ -52,3 +52,16 @@ sites:
     request_delay: 1
     timeout: 60
     impersonate: chrome
+
+  - name: atkinsrealis
+    projects_url: https://www.atkinsrealis.com/en/projects
+    adapter: architecture_scraper.adapters.sites.atkinsrealis:AtkinsRealisAdapter
+
+    # The project grid uses a public GET API and complete server-rendered HTML.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: safari
