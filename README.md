@@ -159,6 +159,22 @@ The projects page is stored as the listing record, discovered URLs are written
 to `raw-pages/arcadis/project_urls.txt`, and complete detail HTML is saved under
 `raw-pages/arcadis/detail/`.
 
+## Jacobs
+
+The Jacobs adapter follows the ordinary HTML pagination behind Jacobs's project
+grid. It saves every listing page, validates direct `/projects/{slug}` links,
+and downloads one complete HTML file for each unique linked detail page.
+
+Run only Jacobs with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site jacobs -o raw-pages
+```
+
+The listing pages are saved under `raw-pages/jacobs/listing/`, discovered URLs
+are written to `raw-pages/jacobs/project_urls.txt`, and complete detail HTML is
+saved under `raw-pages/jacobs/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.

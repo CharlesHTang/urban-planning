@@ -39,3 +39,16 @@ sites:
     request_delay: 1
     timeout: 60
     impersonate: chrome
+
+  - name: jacobs
+    projects_url: https://www.jacobs.com/projects
+    adapter: architecture_scraper.adapters.sites.jacobs:JacobsAdapter
+
+    # Jacobs serves its paginated listing and detail pages as complete HTML.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
