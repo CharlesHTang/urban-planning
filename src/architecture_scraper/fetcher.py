@@ -73,6 +73,26 @@ class Fetcher:
                 raise
             return await self._fetch_browser(url)
 
+    async def post_json(
+        self,
+        url: str,
+        payload: object,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> FetchResult:
+        """POST JSON and return the complete response body."""
+        if self._session is None:
+            raise RuntimeError("Fetcher must be used as an async context manager")
+        await self._wait_for_rate_limit()
+        response = await self._session.post(
+            url,
+            json=payload,
+            headers=headers,
+            allow_redirects=True,
+        )
+        response.raise_for_status()
+        return FetchResult(url, str(response.url), response.text)
+
     @asynccontextmanager
     async def browser_page(self, url: str) -> AsyncIterator[Page]:
         """Open a customizable Playwright page for a site adapter."""

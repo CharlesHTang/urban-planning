@@ -143,6 +143,22 @@ The adapter stores the source sitemap as the listing record, writes the
 discovered URLs to `raw-pages/wsp/project_urls.txt`, and saves complete detail
 HTML under `raw-pages/wsp/detail/`.
 
+## Arcadis
+
+The Arcadis adapter uses the public search endpoint behind Arcadis's
+global-English "All Projects" grid. It paginates through the current grid and
+downloads the complete HTML for each returned project detail page.
+
+Run only Arcadis with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site arcadis -o raw-pages
+```
+
+The projects page is stored as the listing record, discovered URLs are written
+to `raw-pages/arcadis/project_urls.txt`, and complete detail HTML is saved under
+`raw-pages/arcadis/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.

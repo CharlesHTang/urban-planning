@@ -26,3 +26,16 @@ sites:
     request_delay: 3
     timeout: 60
     impersonate: safari
+
+  - name: arcadis
+    projects_url: https://www.arcadis.com/en/projects
+    adapter: architecture_scraper.adapters.sites.arcadis:ArcadisAdapter
+
+    # Arcadis's project grid uses a public JSON search endpoint.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
