@@ -226,6 +226,23 @@ The projects page is stored as the listing record, discovered URLs are written
 to `raw-pages/stantec/project_urls.txt`, and complete detail HTML is saved under
 `raw-pages/stantec/detail/`.
 
+## Arup
+
+The Arup adapter paginates through the public JSON endpoint behind the US
+English "All projects" grid. It sends the same project-only filter as the
+frontend, validates each direct `/en-us/projects/{slug}/` URL, and downloads
+the complete server-rendered project HTML without Playwright.
+
+Run only Arup with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site arup -o raw-pages
+```
+
+The projects page is stored as the listing record, discovered URLs are written
+to `raw-pages/arup/project_urls.txt`, and complete detail HTML is saved under
+`raw-pages/arup/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.

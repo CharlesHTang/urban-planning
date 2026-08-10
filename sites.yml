@@ -92,3 +92,16 @@ sites:
     request_delay: 0.5
     timeout: 60
     impersonate: chrome
+
+  - name: arup
+    projects_url: https://www.arup.com/en-us/projects/all-projects/
+    adapter: architecture_scraper.adapters.sites.arup:ArupAdapter
+
+    # Arup's project grid uses a paginated public JSON endpoint.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome
