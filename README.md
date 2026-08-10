@@ -243,6 +243,23 @@ The projects page is stored as the listing record, discovered URLs are written
 to `raw-pages/arup/project_urls.txt`, and complete detail HTML is saved under
 `raw-pages/arup/detail/`.
 
+## HDR
+
+The HDR adapter reads the public sitemap index and filters its sitemap pages
+for direct `/portfolio/{slug}` URLs. This avoids the query-string pagination
+that HDR disallows in `robots.txt` and downloads the complete server-rendered
+portfolio HTML without Playwright.
+
+Run only HDR with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site hdr -o raw-pages
+```
+
+The portfolio page is stored as the listing record, discovered URLs are written
+to `raw-pages/hdr/project_urls.txt`, and complete detail HTML is saved under
+`raw-pages/hdr/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.

@@ -105,3 +105,16 @@ sites:
     request_delay: 0.5
     timeout: 60
     impersonate: chrome
+
+  - name: hdr
+    projects_url: https://www.hdrinc.com/portfolio
+    adapter: architecture_scraper.adapters.sites.hdr:HdrAdapter
+
+    # HDR publishes portfolio URLs in its public XML sitemap pages.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
