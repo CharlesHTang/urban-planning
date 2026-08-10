@@ -118,3 +118,16 @@ sites:
     request_delay: 0.5
     timeout: 90
     impersonate: chrome
+
+  - name: sweco
+    projects_url: https://www.swecogroup.com/portfolio/
+    adapter: architecture_scraper.adapters.sites.sweco:SwecoAdapter
+
+    # Sweco publishes portfolio URLs in dedicated XML sitemaps.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome

@@ -260,6 +260,23 @@ The portfolio page is stored as the listing record, discovered URLs are written
 to `raw-pages/hdr/project_urls.txt`, and complete detail HTML is saved under
 `raw-pages/hdr/detail/`.
 
+## Sweco
+
+The Sweco adapter reads the sitemap index declared in `robots.txt`, selects its
+numbered `showroom_cpt` portfolio sitemaps, and validates direct
+`/portfolio/{category}/{slug}/` URLs. Both listing and detail pages contain
+complete server-rendered HTML, so Playwright is not needed.
+
+Run only Sweco with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site sweco -o raw-pages
+```
+
+The portfolio page is stored as the listing record, discovered URLs are written
+to `raw-pages/sweco/project_urls.txt`, and complete detail HTML is saved under
+`raw-pages/sweco/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.
