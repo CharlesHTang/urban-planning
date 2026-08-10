@@ -191,6 +191,41 @@ The projects page is stored as the listing record, discovered URLs are written
 to `raw-pages/atkinsrealis/project_urls.txt`, and complete detail HTML is saved
 under `raw-pages/atkinsrealis/detail/`.
 
+## Archello
+
+The Archello adapter reads the project-only sitemap shards declared by the
+site's public sitemap index. This avoids thousands of HTML listing pages and
+discovers direct `/project/{slug}` detail URLs without CSS selectors or browser
+rendering.
+
+Run only Archello with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site archello -o raw-pages
+```
+
+Archello is an industry-wide project platform rather than one design firm and
+publishes well over 100,000 project pages. A complete run will therefore take
+many hours and may require tens of gigabytes of storage. Its one-second robots
+crawl delay is reflected in `sites.yml`.
+
+## Stantec
+
+The Stantec adapter paginates through the public GET endpoint behind the global
+project grid. It uses the API's reported page number and total rather than
+assuming a fixed number of projects per response, validates every returned
+Stantec detail URL, and downloads the complete server-rendered HTML.
+
+Run only Stantec with:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site stantec -o raw-pages
+```
+
+The projects page is stored as the listing record, discovered URLs are written
+to `raw-pages/stantec/project_urls.txt`, and complete detail HTML is saved under
+`raw-pages/stantec/detail/`.
+
 ## Rendering modes
 
 - `never`: use only `curl_cffi`.

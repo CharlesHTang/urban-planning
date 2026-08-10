@@ -65,3 +65,30 @@ sites:
     request_delay: 1
     timeout: 60
     impersonate: safari
+
+  - name: archello
+    projects_url: https://archello.com/projects
+    adapter: architecture_scraper.adapters.sites.archello:ArchelloAdapter
+
+    # Archello publishes project URLs in sharded XML sitemaps.
+    listing_render: never
+    detail_render: never
+
+    # Archello's robots.txt specifies a one-second crawl delay.
+    concurrency: 3
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
+
+  - name: stantec
+    projects_url: https://www.stantec.com/en/projects
+    adapter: architecture_scraper.adapters.sites.stantec:StantecAdapter
+
+    # The project grid uses a paginated public GET endpoint.
+    listing_render: never
+    detail_render: never
+
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome
