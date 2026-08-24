@@ -12,6 +12,7 @@ class SiteConfig:
     name: str
     projects_url: str
     adapter: str = "capture_only"
+    extractor: str | None = None
     listing_render: RenderMode = "never"
     detail_render: RenderMode = "never"
     concurrency: int = 5
@@ -42,6 +43,7 @@ def _parse_site(raw: Any, index: int) -> SiteConfig:
         name=_string(item, "name", context),
         projects_url=_string(item, "projects_url", context),
         adapter=_optional_string(item, "adapter", "capture_only", context),
+        extractor=_optional_nullable_string(item, "extractor", context),
         listing_render=_render_mode(item.get("listing_render", "never"), context),
         detail_render=_render_mode(item.get("detail_render", "never"), context),
         concurrency=_positive_int(item.get("concurrency", 5), f"{context}.concurrency"),
@@ -83,6 +85,19 @@ def _optional_string(
     return value.strip()
 
 
+def _optional_nullable_string(
+    raw: dict[str, Any],
+    key: str,
+    context: str,
+) -> str | None:
+    value = raw.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(f"{context}.{key} must be a non-empty string")
+    return value.strip()
+
+
 def _positive_int(raw: Any, context: str) -> int:
     if not isinstance(raw, int) or isinstance(raw, bool) or raw <= 0:
         raise ValueError(f"{context} must be a positive integer")
@@ -99,4 +114,3 @@ def _non_negative_number(raw: Any, context: str) -> float:
     if not isinstance(raw, (int, float)) or isinstance(raw, bool) or raw < 0:
         raise ValueError(f"{context} must be a non-negative number")
     return float(raw)
-

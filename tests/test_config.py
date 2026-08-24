@@ -19,6 +19,7 @@ sites:
     site = load_sites(config)[0]
 
     assert site.adapter == "capture_only"
+    assert site.extractor is None
     assert site.listing_render == "never"
     assert site.detail_render == "never"
 
@@ -55,3 +56,35 @@ sites:
     with pytest.raises(ValueError, match="unique"):
         load_sites(config)
 
+
+def test_loads_optional_extractor_reference(tmp_path: Path) -> None:
+    config = tmp_path / "sites.yml"
+    config.write_text(
+        """
+sites:
+  - name: studio
+    projects_url: https://studio.test/work
+    extractor: architecture_scraper.extractors.sites.studio:StudioExtractor
+""",
+        encoding="utf-8",
+    )
+
+    assert load_sites(config)[0].extractor == (
+        "architecture_scraper.extractors.sites.studio:StudioExtractor"
+    )
+
+
+def test_rejects_empty_extractor_reference(tmp_path: Path) -> None:
+    config = tmp_path / "sites.yml"
+    config.write_text(
+        """
+sites:
+  - name: studio
+    projects_url: https://studio.test/work
+    extractor: ""
+""",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="extractor must be a non-empty string"):
+        load_sites(config)

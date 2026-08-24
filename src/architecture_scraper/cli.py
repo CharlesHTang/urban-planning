@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 
 from .config import SiteConfig, load_sites
+from .extractors import ExtractionRunner, ExtractionStore
 from .models import ScrapeError
 from .runner import CollectionRunner
 from .storage import PageStore
@@ -16,6 +17,13 @@ def main() -> None:
 
 async def _run(args: argparse.Namespace) -> int:
     sites = load_sites(args.config)
+    if args.command == "extract":
+        return _extract_sites(
+            _select_sites(sites, args.site),
+            args.raw,
+            args.output,
+        )
+
     with PageStore(args.output) as store:
         if args.command == "collect":
             return await _collect_sites(_select_sites(sites, args.site), store)
@@ -37,6 +45,34 @@ async def _collect_sites(sites: list[SiteConfig], store: PageStore) -> int:
             error_count += 1
             continue
         _print_summary(site.name, summary.saved_pages, summary.errors)
+        error_count += len(summary.errors)
+    return 1 if error_count else 0
+
+
+def _extract_sites(
+    sites: list[SiteConfig],
+    raw_root: Path,
+    output_root: Path,
+) -> int:
+    error_count = 0
+    store = ExtractionStore(output_root)
+    for site in sites:
+        try:
+            summary = ExtractionRunner(site, raw_root, store).run()
+        except Exception as error:
+            print(f"{site.name}: extraction failed: {error}", file=sys.stderr)
+            error_count += 1
+            continue
+
+        print(
+            f"{site.name}: extracted {summary.extracted_projects} projects; "
+            f"{len(summary.errors)} errors"
+        )
+        for error in summary.errors:
+            print(
+                f"{site.name}: {error.source_url}: {error.message}",
+                file=sys.stderr,
+            )
         error_count += len(summary.errors)
     return 1 if error_count else 0
 
@@ -70,7 +106,7 @@ def _read_urls(path: Path) -> list[str]:
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Capture complete, unparsed architectural project pages."
+        description="Capture and extract architectural project pages."
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
@@ -90,6 +126,29 @@ def _parse_args() -> argparse.Namespace:
     details.add_argument("site", help="Configured site name")
     details.add_argument(
         "urls", type=Path, help="Text file containing one URL per line"
+    )
+
+    extract = subparsers.add_parser(
+        "extract",
+        help="Extract structured project records from downloaded detail HTML",
+    )
+    extract.add_argument("config", type=Path, help="Path to the sites YAML file")
+    extract.add_argument(
+        "--site",
+        help="Extract only the configured site with this name",
+    )
+    extract.add_argument(
+        "--raw",
+        type=Path,
+        default=Path("raw-pages"),
+        help="Raw HTML directory containing manifest.jsonl (default: raw-pages)",
+    )
+    extract.add_argument(
+        "-o",
+        "--output",
+        type=Path,
+        default=Path("extracted"),
+        help="Extracted JSONL output directory (default: extracted)",
     )
     return parser.parse_args()
 

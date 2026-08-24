@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "architecture-scraper"
 version = "0.1.0"
-description = "A small, configurable scraper for architectural project websites"
+description = "Capture and extract architectural project websites"
 requires-python = ">=3.11"
 dependencies = [
     "curl-cffi>=0.13,<1",

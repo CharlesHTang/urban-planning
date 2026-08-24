@@ -7,6 +7,9 @@ sites:
     # Later this can be replaced with module.path:AdapterClass for custom behavior.
     adapter: capture_only
 
+    # Add module.path:ExtractorClass after writing this site's HTML extractor.
+    # extractor: architecture_scraper.extractors.sites.example:ExampleExtractor
+
     # never = curl_cffi; always = Playwright; auto = curl_cffi with browser
     # fallback only when the HTTP request fails.
     listing_render: never
@@ -16,4 +19,3 @@ sites:
     request_delay: 0.5
     timeout: 30
     impersonate: chrome
-
