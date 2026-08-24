@@ -1,6 +1,7 @@
 # Architecture Scraper
 
-This package captures complete, unparsed HTML pages. It assumes that the main
+This package captures complete HTML pages and provides a shared layer for
+extracting structured project records from them. It assumes that the main
 projects-page URL is known for every website, while project detail URLs may not
 be known yet.
 
@@ -79,6 +80,69 @@ venv/bin/architecture-scraper fetch-details \
 
 The detail HTML is saved under `raw-pages/example-architects/detail/`. It is not
 parsed or transformed.
+
+## Extract downloaded detail pages
+
+Extraction follows the same shared-versus-site-specific split as downloading:
+
+- Shared code reads detail entries from `raw-pages/manifest.jsonl`, opens local
+  HTML, validates records, attaches provenance, and writes JSONL.
+- A site extractor contains only that website's HTML selectors and returns an
+  `ExtractedProject`.
+
+Create a site extractor by subclassing `ProjectExtractor`:
+
+```python
+from architecture_scraper.extractors import ExtractedProject, ProjectExtractor
+
+
+class MyStudioExtractor(ProjectExtractor):
+    VERSION = 1
+
+    def extract(self, html: str, *, source_url: str) -> ExtractedProject:
+        # Parse this site's HTML and return its project fields here.
+        return ExtractedProject(
+            project_name="Example project",
+            description="Complete extracted description",
+            location_raw="City, Country",
+            services=["Architecture"],
+        )
+```
+
+Reference it in the site's YAML entry:
+
+```yaml
+extractor: architecture_scraper.extractors.sites.my_studio:MyStudioExtractor
+```
+
+Then extract one site:
+
+```bash
+venv/bin/architecture-scraper extract \
+  sites.yml \
+  --site my-studio \
+  --raw raw-pages \
+  -o extracted
+```
+
+Output is deterministic and is replaced on each run:
+
+```text
+extracted/
+└── my-studio/
+    ├── my-studio_projects.jsonl
+    └── my-studio_errors.jsonl
+```
+
+Each successful record includes the extracted fields plus `firm`, final and
+requested source URLs, raw source file, capture timestamp, scrape date, and
+extractor version. One malformed page is written to the errors file without
+stopping extraction of the remaining pages. Repeated manifest entries for the
+same raw file are processed once using their latest metadata.
+
+The shared layer deliberately has no HTML selectors and requires no parser
+library. Add a parser such as Beautiful Soup or lxml when implementing the
+first site-specific extractor.
 
 ## Adding an individualized site adapter
 
@@ -276,6 +340,39 @@ venv/bin/architecture-scraper collect sites.yml --site sweco -o raw-pages
 The portfolio page is stored as the listing record, discovered URLs are written
 to `raw-pages/sweco/project_urls.txt`, and complete detail HTML is saved under
 `raw-pages/sweco/detail/`.
+
+## Additional project adapters
+
+The following adapters use each firm's public XML sitemap and strict project
+URL patterns. The counts below are live verification results from August 2026;
+they are not hard-coded and may change when a firm updates its portfolio.
+
+| Site name | Discovery source | Verified URLs |
+| --- | --- | ---: |
+| `ramboll` | Global URL sitemap filtered to `/projects/{category}/{slug}` | 197 |
+| `gensler` | Main sitemap filtered to direct `/projects/{slug}` pages | 2,199 |
+| `perkinswill` | Dedicated `project-sitemap.xml` | 588 |
+| `hks` | Dedicated `case_study-sitemap.xml` | 396 |
+| `hok` | Two overlapping `projects-sitemap` files | 385 |
+| `dlrgroup` | Dedicated `project-sitemap.xml` | 506 |
+| `som` | Dedicated `project-sitemap.xml` with duplicate removal | 540 |
+| `mottmac` | English sitemap filtered to `/en/projects/{slug}` | 239 |
+| `perkinseastman` | Dedicated `projects-sitemap.xml` | 594 |
+| `populous` | Project sitemap filtered to English `/projects` and `/showcases` pages | 295 |
+| `smithgroup` | Paginated sitemap filtered to `/projects/{slug}` | 435 |
+
+Run any one with its site name:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site ramboll -o raw-pages
+```
+
+The supplied HKS, DLR Group, SOM, and SmithGroup listing routes have changed or
+redirect elsewhere. Their adapters therefore use current canonical listing
+pages where available or store the project sitemap as the listing record. HKS
+specifies a 600-second crawl delay and SOM specifies a 10-second delay in
+`robots.txt`; both delays are reflected in `sites.yml` and make their complete
+downloads substantially slower.
 
 ## Rendering modes
 

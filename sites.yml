@@ -131,3 +131,115 @@ sites:
     request_delay: 0.5
     timeout: 60
     impersonate: chrome
+
+  - name: ramboll
+    projects_url: https://www.ramboll.com/projects
+    adapter: architecture_scraper.adapters.sites.ramboll:RambollAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: gensler
+    projects_url: https://www.gensler.com/projects
+    adapter: architecture_scraper.adapters.sites.gensler:GenslerAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome
+
+  - name: perkinswill
+    projects_url: https://perkinswill.com/work/
+    adapter: architecture_scraper.adapters.sites.perkinswill:PerkinsWillAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
+
+  - name: hks
+    projects_url: https://www.hksinc.com/what-we-do/
+    adapter: architecture_scraper.adapters.sites.hks:HksAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 1
+    # HKS specifies this crawl delay in robots.txt.
+    request_delay: 600
+    timeout: 60
+    impersonate: chrome
+
+  - name: hok
+    projects_url: https://www.hok.com/projects/
+    adapter: architecture_scraper.adapters.sites.hok:HokAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
+
+  - name: dlrgroup
+    projects_url: https://www.dlrgroup.com/work
+    adapter: architecture_scraper.adapters.sites.dlrgroup:DlrGroupAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
+
+  - name: som
+    projects_url: https://www.som.com/projects
+    adapter: architecture_scraper.adapters.sites.som:SomAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 3
+    # SOM specifies this crawl delay in robots.txt.
+    request_delay: 10
+    timeout: 60
+    impersonate: chrome
+
+  - name: mottmac
+    projects_url: https://www.mottmac.com/en/projects/
+    adapter: architecture_scraper.adapters.sites.mottmac:MottMacAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome
+
+  - name: perkinseastman
+    projects_url: https://www.perkinseastman.com/projects/
+    adapter: architecture_scraper.adapters.sites.perkinseastman:PerkinsEastmanAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
+
+  - name: populous
+    projects_url: https://populous.com/projects
+    adapter: architecture_scraper.adapters.sites.populous:PopulousAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
+
+  - name: smithgroup
+    projects_url: https://www.smithgroup.com/our-work/projects
+    adapter: architecture_scraper.adapters.sites.smithgroup:SmithGroupAdapter
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 1
+    timeout: 60
+    impersonate: chrome
