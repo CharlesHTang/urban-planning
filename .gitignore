@@ -3,4 +3,5 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 raw-pages/
+extracted/
 .DS_Store

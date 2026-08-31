@@ -18,8 +18,11 @@ def main() -> None:
 async def _run(args: argparse.Namespace) -> int:
     sites = load_sites(args.config)
     if args.command == "extract":
+        selected_sites = _select_sites(sites, args.site)
+        if args.site is None:
+            selected_sites = [site for site in selected_sites if site.extractor]
         return _extract_sites(
-            _select_sites(sites, args.site),
+            selected_sites,
             args.raw,
             args.output,
         )

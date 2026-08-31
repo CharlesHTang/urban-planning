@@ -158,6 +158,45 @@ def test_extraction_store_overwrites_previous_output(tmp_path: Path) -> None:
     assert errors_path.read_text(encoding="utf-8") == ""
 
 
+def test_extraction_runner_deduplicates_redirect_aliases(tmp_path: Path) -> None:
+    raw_root = tmp_path / "raw"
+    final_url = "https://studio.test/projects/canonical"
+    with PageStore(raw_root) as page_store:
+        page_store.save(
+            RawPage(
+                site="studio",
+                kind="detail",
+                requested_url="https://studio.test/projects/alias-one",
+                url=final_url,
+                html="first response",
+            )
+        )
+        page_store.save(
+            RawPage(
+                site="studio",
+                kind="detail",
+                requested_url="https://studio.test/projects/alias-two",
+                url=final_url,
+                html="second response",
+            )
+        )
+
+    output_root = tmp_path / "extracted"
+    summary = ExtractionRunner(
+        make_config(),
+        raw_root,
+        ExtractionStore(output_root),
+        extractor=FakeExtractor(make_config()),
+    ).run()
+
+    assert summary.extracted_projects == 1
+    record = json.loads(
+        (output_root / "studio" / "studio_projects.jsonl").read_text()
+    )
+    assert record["requested_url"].endswith("alias-two")
+    assert record["source_url"] == final_url
+
+
 def test_loads_configured_extractor() -> None:
     reference = f"{__name__}:FakeExtractor"
     extractor = load_extractor(make_config(extractor=reference))

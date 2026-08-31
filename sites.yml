@@ -2,6 +2,7 @@ sites:
   - name: aecom
     projects_url: https://aecom.com/projects/
     adapter: architecture_scraper.adapters.sites.aecom:AecomAdapter
+    extractor: architecture_scraper.extractors.sites.aecom:AecomExtractor
 
     # AECOM exposes both its listing and detail HTML without browser rendering.
     listing_render: never
@@ -16,6 +17,7 @@ sites:
   - name: wsp
     projects_url: https://www.wsp.com/en-gl/projects#sort=date%20descending
     adapter: architecture_scraper.adapters.sites.wsp:WspAdapter
+    extractor: architecture_scraper.extractors.sites.wsp:WspExtractor
 
     # WSP's sitemap and detail pages are available through ordinary HTTP.
     listing_render: never
@@ -30,6 +32,7 @@ sites:
   - name: arcadis
     projects_url: https://www.arcadis.com/en/projects
     adapter: architecture_scraper.adapters.sites.arcadis:ArcadisAdapter
+    extractor: architecture_scraper.extractors.sites.arcadis:ArcadisExtractor
 
     # Arcadis's project grid uses a public JSON search endpoint.
     listing_render: never
@@ -43,6 +46,7 @@ sites:
   - name: jacobs
     projects_url: https://www.jacobs.com/projects
     adapter: architecture_scraper.adapters.sites.jacobs:JacobsAdapter
+    extractor: architecture_scraper.extractors.sites.jacobs:JacobsExtractor
 
     # Jacobs serves its paginated listing and detail pages as complete HTML.
     listing_render: never
@@ -56,6 +60,7 @@ sites:
   - name: atkinsrealis
     projects_url: https://www.atkinsrealis.com/en/projects
     adapter: architecture_scraper.adapters.sites.atkinsrealis:AtkinsRealisAdapter
+    extractor: architecture_scraper.extractors.sites.atkinsrealis:AtkinsRealisExtractor
 
     # The project grid uses a public GET API and complete server-rendered HTML.
     listing_render: never
@@ -83,6 +88,7 @@ sites:
   - name: stantec
     projects_url: https://www.stantec.com/en/projects
     adapter: architecture_scraper.adapters.sites.stantec:StantecAdapter
+    extractor: architecture_scraper.extractors.sites.stantec:StantecExtractor
 
     # The project grid uses a paginated public GET endpoint.
     listing_render: never
@@ -96,6 +102,7 @@ sites:
   - name: arup
     projects_url: https://www.arup.com/en-us/projects/all-projects/
     adapter: architecture_scraper.adapters.sites.arup:ArupAdapter
+    extractor: architecture_scraper.extractors.sites.arup:ArupExtractor
 
     # Arup's project grid uses a paginated public JSON endpoint.
     listing_render: never
@@ -109,6 +116,7 @@ sites:
   - name: hdr
     projects_url: https://www.hdrinc.com/portfolio
     adapter: architecture_scraper.adapters.sites.hdr:HdrAdapter
+    extractor: architecture_scraper.extractors.sites.hdr:HdrExtractor
 
     # HDR publishes portfolio URLs in its public XML sitemap pages.
     listing_render: never
@@ -122,6 +130,7 @@ sites:
   - name: sweco
     projects_url: https://www.swecogroup.com/portfolio/
     adapter: architecture_scraper.adapters.sites.sweco:SwecoAdapter
+    extractor: architecture_scraper.extractors.sites.sweco:SwecoExtractor
 
     # Sweco publishes portfolio URLs in dedicated XML sitemaps.
     listing_render: never
@@ -135,6 +144,7 @@ sites:
   - name: ramboll
     projects_url: https://www.ramboll.com/projects
     adapter: architecture_scraper.adapters.sites.ramboll:RambollAdapter
+    extractor: architecture_scraper.extractors.sites.ramboll:RambollExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -145,6 +155,7 @@ sites:
   - name: gensler
     projects_url: https://www.gensler.com/projects
     adapter: architecture_scraper.adapters.sites.gensler:GenslerAdapter
+    extractor: architecture_scraper.extractors.sites.gensler:GenslerExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -155,6 +166,7 @@ sites:
   - name: perkinswill
     projects_url: https://perkinswill.com/work/
     adapter: architecture_scraper.adapters.sites.perkinswill:PerkinsWillAdapter
+    extractor: architecture_scraper.extractors.sites.perkinswill:PerkinsWillExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -176,6 +188,7 @@ sites:
   - name: hok
     projects_url: https://www.hok.com/projects/
     adapter: architecture_scraper.adapters.sites.hok:HokAdapter
+    extractor: architecture_scraper.extractors.sites.hok:HokExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -186,6 +199,7 @@ sites:
   - name: dlrgroup
     projects_url: https://www.dlrgroup.com/work
     adapter: architecture_scraper.adapters.sites.dlrgroup:DlrGroupAdapter
+    extractor: architecture_scraper.extractors.sites.dlrgroup:DlrGroupExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -196,6 +210,7 @@ sites:
   - name: som
     projects_url: https://www.som.com/projects
     adapter: architecture_scraper.adapters.sites.som:SomAdapter
+    extractor: architecture_scraper.extractors.sites.som:SomExtractor
     listing_render: never
     detail_render: never
     concurrency: 3
@@ -207,6 +222,7 @@ sites:
   - name: mottmac
     projects_url: https://www.mottmac.com/en/projects/
     adapter: architecture_scraper.adapters.sites.mottmac:MottMacAdapter
+    extractor: architecture_scraper.extractors.sites.mottmac:MottMacExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -217,6 +233,7 @@ sites:
   - name: perkinseastman
     projects_url: https://www.perkinseastman.com/projects/
     adapter: architecture_scraper.adapters.sites.perkinseastman:PerkinsEastmanAdapter
+    extractor: architecture_scraper.extractors.sites.perkinseastman:PerkinsEastmanExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -227,6 +244,7 @@ sites:
   - name: populous
     projects_url: https://populous.com/projects
     adapter: architecture_scraper.adapters.sites.populous:PopulousAdapter
+    extractor: architecture_scraper.extractors.sites.populous:PopulousExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
@@ -237,6 +255,7 @@ sites:
   - name: smithgroup
     projects_url: https://www.smithgroup.com/our-work/projects
     adapter: architecture_scraper.adapters.sites.smithgroup:SmithGroupAdapter
+    extractor: architecture_scraper.extractors.sites.smithgroup:SmithGroupExtractor
     listing_render: never
     detail_render: never
     concurrency: 5

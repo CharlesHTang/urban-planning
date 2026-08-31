@@ -125,6 +125,12 @@ venv/bin/architecture-scraper extract \
   -o extracted
 ```
 
+Omit `--site` to run every site that has a configured extractor:
+
+```bash
+venv/bin/architecture-scraper extract sites.yml --raw raw-pages -o extracted
+```
+
 Output is deterministic and is replaced on each run:
 
 ```text
@@ -137,12 +143,12 @@ extracted/
 Each successful record includes the extracted fields plus `firm`, final and
 requested source URLs, raw source file, capture timestamp, scrape date, and
 extractor version. One malformed page is written to the errors file without
-stopping extraction of the remaining pages. Repeated manifest entries for the
-same raw file are processed once using their latest metadata.
+stopping extraction of the remaining pages. Repeated manifest entries and
+redirect aliases for the same final URL are processed once using their latest
+metadata.
 
-The shared layer deliberately has no HTML selectors and requires no parser
-library. Add a parser such as Beautiful Soup or lxml when implementing the
-first site-specific extractor.
+The shared layer uses Beautiful Soup for safe HTML parsing while each site
+extractor owns the selectors and embedded-data rules unique to that website.
 
 ## Adding an individualized site adapter
 

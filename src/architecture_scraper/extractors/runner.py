@@ -90,7 +90,9 @@ class ExtractionRunner:
                 continue
 
             entry = self._manifest_entry(record, line_number)
-            entries[entry.path] = entry
+            # Redirect aliases can produce different hash-based files for the
+            # same final project URL. Extract each final page only once.
+            entries[entry.url] = entry
         return list(entries.values())
 
     @staticmethod
