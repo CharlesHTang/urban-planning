@@ -175,7 +175,7 @@ sites:
     impersonate: chrome
 
   - name: hks
-    projects_url: https://www.hksinc.com/what-we-do/
+    projects_url: https://www.hksinc.com/search/?contentTypes=case-studies
     adapter: architecture_scraper.adapters.sites.hks:HksAdapter
     listing_render: never
     detail_render: never
