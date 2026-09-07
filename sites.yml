@@ -262,3 +262,63 @@ sites:
     request_delay: 1
     timeout: 60
     impersonate: chrome
+
+  - name: dargroup
+    projects_url: https://www.dargroup.com/work
+    adapter: architecture_scraper.adapters.sites.dargroup:DarGroupAdapter
+
+    # Dar Group is now Sidara; its current projects are listed in Sidara's sitemap.
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome
+
+  - name: nikken
+    projects_url: https://www.nikken.co.jp/en/projects
+    adapter: architecture_scraper.adapters.sites.nikken:NikkenAdapter
+
+    # Nikken's complete project index is available as public JSON.
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome
+
+  - name: burohappold
+    projects_url: https://www.burohappold.com/projects
+    adapter: architecture_scraper.adapters.sites.burohappold:BuroHappoldAdapter
+
+    # Buro Happold publishes dedicated project sitemaps.
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: thorntontomasetti
+    projects_url: https://www.thorntontomasetti.com/work
+    adapter: architecture_scraper.adapters.sites.thorntontomasetti:ThorntonTomasettiAdapter
+
+    # /work is obsolete; the adapter captures /projects and reads the public sitemap.
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 60
+    impersonate: chrome
+
+  - name: ghd
+    projects_url: https://www.ghd.com/en/projects
+    adapter: architecture_scraper.adapters.sites.ghd:GhdAdapter
+
+    # GHD's project listing uses a paginated public Sitecore search endpoint.
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
