@@ -49,6 +49,14 @@ configured site, select it by its `name`:
 venv/bin/architecture-scraper collect sites.yml --site aecom -o raw-pages
 ```
 
+If a collection run is interrupted, rerun it with `--resume`. The adapter still
+refreshes the project URL list, but detail pages already saved as non-empty HTML
+files are skipped:
+
+```bash
+venv/bin/architecture-scraper collect sites.yml --site aecom -o raw-pages --resume
+```
+
 `capture_only` retrieves the entire projects page and does no parsing. Output is
 organized as:
 
@@ -75,11 +83,13 @@ venv/bin/architecture-scraper fetch-details \
   sites.yml \
   example-architects \
   example-project-urls.txt \
-  -o raw-pages
+  -o raw-pages \
+  --resume
 ```
 
 The detail HTML is saved under `raw-pages/example-architects/detail/`. It is not
-parsed or transformed.
+parsed or transformed. Omit `--resume` when you intentionally want to download
+and replace every listed detail page.
 
 ## Extract downloaded detail pages
 

@@ -5,7 +5,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TextIO
 
-from .models import RawPage
+from .models import PageKind, RawPage
 
 
 class PageStore:
@@ -31,7 +31,9 @@ class PageStore:
         relative_path = self._page_path(page)
         full_path = self.root / relative_path
         full_path.parent.mkdir(parents=True, exist_ok=True)
-        full_path.write_text(page.html, encoding="utf-8")
+        temporary_path = full_path.with_suffix(f"{full_path.suffix}.tmp")
+        temporary_path.write_text(page.html, encoding="utf-8")
+        temporary_path.replace(full_path)
 
         record = {
             "site": page.site,
@@ -45,6 +47,11 @@ class PageStore:
         self._manifest.flush()
         return full_path
 
+    def has_page(self, site: str, kind: PageKind, requested_url: str) -> bool:
+        """Return whether a non-empty page has already been saved."""
+        path = self.root / self._page_path_for(site, kind, requested_url)
+        return path.is_file() and path.stat().st_size > 0
+
     def save_project_urls(self, site: str, urls: list[str]) -> Path:
         directory = self.root / _safe_name(site)
         directory.mkdir(parents=True, exist_ok=True)
@@ -54,11 +61,14 @@ class PageStore:
         return path
 
     def _page_path(self, page: RawPage) -> Path:
-        digest = hashlib.sha256(page.requested_url.encode()).hexdigest()[:16]
-        return Path(_safe_name(page.site), page.kind, f"{digest}.html")
+        return self._page_path_for(page.site, page.kind, page.requested_url)
+
+    @staticmethod
+    def _page_path_for(site: str, kind: PageKind, requested_url: str) -> Path:
+        digest = hashlib.sha256(requested_url.encode()).hexdigest()[:16]
+        return Path(_safe_name(site), kind, f"{digest}.html")
 
 
 def _safe_name(value: str) -> str:
     safe = re.sub(r"[^a-zA-Z0-9._-]+", "-", value.strip()).strip("-.")
     return safe or "site"
-

@@ -31,4 +31,4 @@ class RunSummary:
     saved_pages: int
     discovered_urls: int
     errors: list[ScrapeError]
-
+    skipped_pages: int = 0

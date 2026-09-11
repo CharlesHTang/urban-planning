@@ -15,7 +15,7 @@ class CollectionRunner:
         self.site = site
         self.store = store
 
-    async def collect(self) -> RunSummary:
+    async def collect(self, *, resume: bool = False) -> RunSummary:
         adapter = load_adapter(self.site)
         async with self._new_fetcher() as fetcher:
             discovery = await adapter.discover(fetcher)
@@ -24,24 +24,57 @@ class CollectionRunner:
 
             urls, invalid_errors = self._normalize_urls(discovery.project_urls)
             self.store.save_project_urls(self.site.name, urls)
-            saved_details, fetch_errors = await self._fetch_details(urls, fetcher)
+            saved_details, skipped_details, fetch_errors = await self._fetch_details(
+                urls,
+                fetcher,
+                resume=resume,
+            )
 
         return RunSummary(
             saved_pages=len(discovery.listing_pages) + saved_details,
             discovered_urls=len(urls),
             errors=invalid_errors + fetch_errors,
+            skipped_pages=skipped_details,
         )
 
-    async def fetch_details(self, urls: list[str]) -> RunSummary:
+    async def fetch_details(
+        self,
+        urls: list[str],
+        *,
+        resume: bool = False,
+    ) -> RunSummary:
         normalized, invalid_errors = self._normalize_urls(urls)
         self.store.save_project_urls(self.site.name, normalized)
         async with self._new_fetcher() as fetcher:
-            saved, fetch_errors = await self._fetch_details(normalized, fetcher)
-        return RunSummary(saved, len(normalized), invalid_errors + fetch_errors)
+            saved, skipped, fetch_errors = await self._fetch_details(
+                normalized,
+                fetcher,
+                resume=resume,
+            )
+        return RunSummary(
+            saved_pages=saved,
+            discovered_urls=len(normalized),
+            errors=invalid_errors + fetch_errors,
+            skipped_pages=skipped,
+        )
 
     async def _fetch_details(
-        self, urls: list[str], fetcher: Fetcher
-    ) -> tuple[int, list[ScrapeError]]:
+        self,
+        urls: list[str],
+        fetcher: Fetcher,
+        *,
+        resume: bool = False,
+    ) -> tuple[int, int, list[ScrapeError]]:
+        pending_urls = urls
+        skipped = 0
+        if resume:
+            pending_urls = [
+                url
+                for url in urls
+                if not self.store.has_page(self.site.name, "detail", url)
+            ]
+            skipped = len(urls) - len(pending_urls)
+
         semaphore = asyncio.Semaphore(self.site.concurrency)
 
         async def fetch_one(url: str) -> ScrapeError | None:
@@ -61,9 +94,9 @@ class CollectionRunner:
                 except Exception as error:
                     return ScrapeError(self.site.name, url, str(error))
 
-        results = await asyncio.gather(*(fetch_one(url) for url in urls))
+        results = await asyncio.gather(*(fetch_one(url) for url in pending_urls))
         errors = [error for error in results if error is not None]
-        return len(urls) - len(errors), errors
+        return len(pending_urls) - len(errors), skipped, errors
 
     def _normalize_urls(
         self, urls: list[str]

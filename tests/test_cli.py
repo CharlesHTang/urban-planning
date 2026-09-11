@@ -1,7 +1,8 @@
 import pytest
 
-from architecture_scraper.cli import _parse_args, _select_sites
+from architecture_scraper.cli import _parse_args, _print_summary, _select_sites
 from architecture_scraper.config import SiteConfig
+from architecture_scraper.models import RunSummary
 
 
 def test_select_sites_returns_all_sites_when_name_is_omitted() -> None:
@@ -51,3 +52,56 @@ def test_parses_extract_command(monkeypatch: pytest.MonkeyPatch) -> None:
     assert args.site == "sweco"
     assert args.raw.name == "raw-pages"
     assert args.output.as_posix() == "data/1_extract"
+
+
+@pytest.mark.parametrize(
+    ("arguments", "expected_resume"),
+    [
+        (["collect", "sites.yml", "--site", "ghd"], False),
+        (["collect", "sites.yml", "--site", "ghd", "--resume"], True),
+        (
+            [
+                "fetch-details",
+                "sites.yml",
+                "ghd",
+                "project_urls.txt",
+            ],
+            False,
+        ),
+        (
+            [
+                "fetch-details",
+                "sites.yml",
+                "ghd",
+                "project_urls.txt",
+                "--resume",
+            ],
+            True,
+        ),
+    ],
+)
+def test_parses_resume_option(
+    monkeypatch: pytest.MonkeyPatch,
+    arguments: list[str],
+    expected_resume: bool,
+) -> None:
+    monkeypatch.setattr("sys.argv", ["architecture-scraper", *arguments])
+
+    assert _parse_args().resume is expected_resume
+
+
+def test_prints_saved_skipped_and_error_counts(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    summary = RunSummary(
+        saved_pages=3,
+        discovered_urls=5,
+        errors=[],
+        skipped_pages=2,
+    )
+
+    _print_summary("ghd", summary)
+
+    assert capsys.readouterr().out == (
+        "ghd: saved 3 raw pages; skipped 2 existing detail pages; 0 errors\n"
+    )

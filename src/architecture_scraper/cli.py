@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .config import SiteConfig, load_sites
 from .extractors import ExtractionRunner, ExtractionStore
-from .models import ScrapeError
+from .models import RunSummary
 from .runner import CollectionRunner
 from .storage import PageStore
 
@@ -29,25 +29,37 @@ async def _run(args: argparse.Namespace) -> int:
 
     with PageStore(args.output) as store:
         if args.command == "collect":
-            return await _collect_sites(_select_sites(sites, args.site), store)
+            return await _collect_sites(
+                _select_sites(sites, args.site),
+                store,
+                resume=args.resume,
+            )
 
         site = _find_site(sites, args.site)
         urls = _read_urls(args.urls)
-        summary = await CollectionRunner(site, store).fetch_details(urls)
-        _print_summary(site.name, summary.saved_pages, summary.errors)
+        summary = await CollectionRunner(site, store).fetch_details(
+            urls,
+            resume=args.resume,
+        )
+        _print_summary(site.name, summary)
         return 1 if summary.errors else 0
 
 
-async def _collect_sites(sites: list[SiteConfig], store: PageStore) -> int:
+async def _collect_sites(
+    sites: list[SiteConfig],
+    store: PageStore,
+    *,
+    resume: bool = False,
+) -> int:
     error_count = 0
     for site in sites:
         try:
-            summary = await CollectionRunner(site, store).collect()
+            summary = await CollectionRunner(site, store).collect(resume=resume)
         except Exception as error:
             print(f"{site.name}: collection failed: {error}", file=sys.stderr)
             error_count += 1
             continue
-        _print_summary(site.name, summary.saved_pages, summary.errors)
+        _print_summary(site.name, summary)
         error_count += len(summary.errors)
     return 1 if error_count else 0
 
@@ -80,9 +92,13 @@ def _extract_sites(
     return 1 if error_count else 0
 
 
-def _print_summary(site: str, saved: int, errors: list[ScrapeError]) -> None:
-    print(f"{site}: saved {saved} raw pages; {len(errors)} errors")
-    for error in errors:
+def _print_summary(site: str, summary: RunSummary) -> None:
+    print(
+        f"{site}: saved {summary.saved_pages} raw pages; "
+        f"skipped {summary.skipped_pages} existing detail pages; "
+        f"{len(summary.errors)} errors"
+    )
+    for error in summary.errors:
         print(f"{site}: {error.url}: {error.message}", file=sys.stderr)
 
 
@@ -121,6 +137,11 @@ def _parse_args() -> argparse.Namespace:
         "--site",
         help="Collect only the configured site with this name",
     )
+    collect.add_argument(
+        "--resume",
+        action="store_true",
+        help="Skip non-empty detail pages already present in the output",
+    )
 
     details = subparsers.add_parser(
         "fetch-details", help="Fetch raw detail pages from a newline-delimited URL file"
@@ -129,6 +150,11 @@ def _parse_args() -> argparse.Namespace:
     details.add_argument("site", help="Configured site name")
     details.add_argument(
         "urls", type=Path, help="Text file containing one URL per line"
+    )
+    details.add_argument(
+        "--resume",
+        action="store_true",
+        help="Skip non-empty detail pages already present in the output",
     )
 
     extract = subparsers.add_parser(
