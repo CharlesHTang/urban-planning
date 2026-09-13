@@ -177,6 +177,7 @@ sites:
   - name: hks
     projects_url: https://www.hksinc.com/search/?contentTypes=case-studies
     adapter: architecture_scraper.adapters.sites.hks:HksAdapter
+    extractor: architecture_scraper.extractors.sites.hks:HksExtractor
     listing_render: never
     detail_render: never
     concurrency: 1
