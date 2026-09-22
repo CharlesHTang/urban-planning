@@ -125,7 +125,7 @@ class SitemapProjectAdapter(SiteAdapter):
     @classmethod
     def _parse_xml(cls, xml: str, source: str) -> ElementTree.Element:
         try:
-            return ElementTree.fromstring(xml)
+            return ElementTree.fromstring(xml.lstrip("\ufeff \t\r\n"))
         except ElementTree.ParseError as error:
             raise RuntimeError(
                 f"{cls.SITE_LABEL} {source} returned invalid XML"

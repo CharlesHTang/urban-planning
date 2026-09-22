@@ -103,6 +103,34 @@ def test_normal_mode_refetches_existing_detail_page(tmp_path: Path) -> None:
     assert fetched_urls == [url]
 
 
+def test_uses_adapter_detail_fetch_override(tmp_path: Path) -> None:
+    config = SiteConfig("studio", "https://studio.test/work/")
+    url = "https://studio.test/api/project-one"
+
+    class FakeAdapter:
+        async def fetch_detail(
+            self,
+            fetcher: object,
+            requested_url: str,
+        ) -> FetchResult:
+            assert requested_url == url
+            return FetchResult(requested_url, requested_url, "custom detail")
+
+    async def exercise() -> None:
+        with PageStore(tmp_path) as store:
+            saved, skipped, errors = await CollectionRunner(
+                config,
+                store,
+            )._fetch_details(
+                [url],
+                object(),  # type: ignore[arg-type]
+                adapter=FakeAdapter(),  # type: ignore[arg-type]
+            )
+            assert (saved, skipped, errors) == (1, 0, [])
+
+    asyncio.run(exercise())
+
+
 def test_collect_resume_still_rediscovers_and_saves_all_project_urls(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -129,6 +157,13 @@ def test_collect_resume_still_rediscovers_and_saves_all_project_urls(
                 ],
                 [completed_url, new_url],
             )
+
+        async def fetch_detail(
+            self,
+            fetcher: "FakeFetcher",
+            url: str,
+        ) -> FetchResult:
+            return await fetcher.fetch(url, render=config.detail_render)
 
     class FakeFetcher:
         async def __aenter__(self) -> "FakeFetcher":

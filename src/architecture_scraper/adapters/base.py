@@ -17,6 +17,10 @@ class SiteAdapter(ABC):
     async def discover(self, fetcher: Fetcher) -> DiscoveryResult:
         """Capture listing pages and return any discovered project URLs."""
 
+    async def fetch_detail(self, fetcher: Fetcher, url: str) -> FetchResult:
+        """Fetch one detail page, with an override point for unusual sites."""
+        return await fetcher.fetch(url, render=self.config.detail_render)
+
     def listing_from_fetch(self, result: FetchResult) -> RawPage:
         return RawPage(
             site=self.config.name,

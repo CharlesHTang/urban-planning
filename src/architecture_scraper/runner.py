@@ -2,6 +2,7 @@ import asyncio
 from urllib.parse import urldefrag, urljoin, urlparse
 
 from .adapters import load_adapter
+from .adapters.base import SiteAdapter
 from .config import SiteConfig
 from .fetcher import Fetcher
 from .models import RawPage, RunSummary, ScrapeError
@@ -28,6 +29,7 @@ class CollectionRunner:
                 urls,
                 fetcher,
                 resume=resume,
+                adapter=adapter,
             )
 
         return RunSummary(
@@ -45,11 +47,13 @@ class CollectionRunner:
     ) -> RunSummary:
         normalized, invalid_errors = self._normalize_urls(urls)
         self.store.save_project_urls(self.site.name, normalized)
+        adapter = load_adapter(self.site)
         async with self._new_fetcher() as fetcher:
             saved, skipped, fetch_errors = await self._fetch_details(
                 normalized,
                 fetcher,
                 resume=resume,
+                adapter=adapter,
             )
         return RunSummary(
             saved_pages=saved,
@@ -64,6 +68,7 @@ class CollectionRunner:
         fetcher: Fetcher,
         *,
         resume: bool = False,
+        adapter: SiteAdapter | None = None,
     ) -> tuple[int, int, list[ScrapeError]]:
         pending_urls = urls
         skipped = 0
@@ -80,7 +85,13 @@ class CollectionRunner:
         async def fetch_one(url: str) -> ScrapeError | None:
             async with semaphore:
                 try:
-                    result = await fetcher.fetch(url, render=self.site.detail_render)
+                    if adapter is None:
+                        result = await fetcher.fetch(
+                            url,
+                            render=self.site.detail_render,
+                        )
+                    else:
+                        result = await adapter.fetch_detail(fetcher, url)
                     self.store.save(
                         RawPage(
                             site=self.site.name,

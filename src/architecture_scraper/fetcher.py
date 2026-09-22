@@ -63,15 +63,25 @@ class Fetcher:
 
     async def fetch(self, url: str, *, render: RenderMode) -> FetchResult:
         """Return the complete response HTML without extracting anything."""
+        return await self.fetch_with_headers(url, render=render)
+
+    async def fetch_with_headers(
+        self,
+        url: str,
+        *,
+        render: RenderMode,
+        headers: dict[str, str] | None = None,
+    ) -> FetchResult:
+        """Return a GET response, optionally with adapter-specific headers."""
         if render == "always":
-            return await self._fetch_browser(url)
+            return await self._fetch_browser(url, headers=headers)
 
         try:
-            return await self._fetch_http(url)
+            return await self._fetch_http(url, headers=headers)
         except Exception:
             if render == "never":
                 raise
-            return await self._fetch_browser(url)
+            return await self._fetch_browser(url, headers=headers)
 
     async def post_json(
         self,
@@ -94,11 +104,18 @@ class Fetcher:
         return FetchResult(url, str(response.url), response.text)
 
     @asynccontextmanager
-    async def browser_page(self, url: str) -> AsyncIterator[Page]:
+    async def browser_page(
+        self,
+        url: str,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> AsyncIterator[Page]:
         """Open a customizable Playwright page for a site adapter."""
         await self._wait_for_rate_limit()
         browser = await self._get_browser()
-        context: BrowserContext = await browser.new_context()
+        context: BrowserContext = await browser.new_context(
+            extra_http_headers=headers,
+        )
         page = await context.new_page()
         try:
             response = await page.goto(
@@ -112,16 +129,30 @@ class Fetcher:
         finally:
             await context.close()
 
-    async def _fetch_http(self, url: str) -> FetchResult:
+    async def _fetch_http(
+        self,
+        url: str,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> FetchResult:
         if self._session is None:
             raise RuntimeError("Fetcher must be used as an async context manager")
         await self._wait_for_rate_limit()
-        response = await self._session.get(url, allow_redirects=True)
+        response = await self._session.get(
+            url,
+            headers=headers,
+            allow_redirects=True,
+        )
         response.raise_for_status()
         return FetchResult(url, str(response.url), response.text)
 
-    async def _fetch_browser(self, url: str) -> FetchResult:
-        async with self.browser_page(url) as page:
+    async def _fetch_browser(
+        self,
+        url: str,
+        *,
+        headers: dict[str, str] | None = None,
+    ) -> FetchResult:
+        async with self.browser_page(url, headers=headers) as page:
             return FetchResult(url, page.url, await page.content())
 
     async def _get_browser(self) -> Browser:

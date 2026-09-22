@@ -267,6 +267,7 @@ sites:
   - name: dargroup
     projects_url: https://www.dargroup.com/work
     adapter: architecture_scraper.adapters.sites.dargroup:DarGroupAdapter
+    extractor: architecture_scraper.extractors.sites.dargroup:DarGroupExtractor
 
     # Dar Group is now Sidara; its current projects are listed in Sidara's sitemap.
     listing_render: never
@@ -279,6 +280,7 @@ sites:
   - name: nikken
     projects_url: https://www.nikken.co.jp/en/projects
     adapter: architecture_scraper.adapters.sites.nikken:NikkenAdapter
+    extractor: architecture_scraper.extractors.sites.nikken:NikkenExtractor
 
     # Nikken's complete project index is available as public JSON.
     listing_render: never
@@ -291,6 +293,7 @@ sites:
   - name: burohappold
     projects_url: https://www.burohappold.com/projects
     adapter: architecture_scraper.adapters.sites.burohappold:BuroHappoldAdapter
+    extractor: architecture_scraper.extractors.sites.burohappold:BuroHappoldExtractor
 
     # Buro Happold publishes dedicated project sitemaps.
     listing_render: never
@@ -303,6 +306,7 @@ sites:
   - name: thorntontomasetti
     projects_url: https://www.thorntontomasetti.com/work
     adapter: architecture_scraper.adapters.sites.thorntontomasetti:ThorntonTomasettiAdapter
+    extractor: architecture_scraper.extractors.sites.thorntontomasetti:ThorntonTomasettiExtractor
 
     # /work is obsolete; the adapter captures /projects and reads the public sitemap.
     listing_render: never
@@ -315,8 +319,163 @@ sites:
   - name: ghd
     projects_url: https://www.ghd.com/en/projects
     adapter: architecture_scraper.adapters.sites.ghd:GhdAdapter
+    extractor: architecture_scraper.extractors.sites.ghd:GhdExtractor
 
     # GHD's project listing uses a paginated public Sitecore search endpoint.
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: systra
+    projects_url: https://www.systra.com/projects
+    adapter: architecture_scraper.adapters.sites.systra:SystraAdapter
+    extractor: architecture_scraper.extractors.sites.systra:SystraExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: fosterandpartners
+    projects_url: https://www.fosterandpartners.com/projects
+    adapter: architecture_scraper.adapters.sites.fosterandpartners:FosterAndPartnersAdapter
+    extractor: architecture_scraper.extractors.sites.fosterandpartners:FosterAndPartnersExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 3
+    request_delay: 0.5
+    timeout: 90
+    impersonate: safari
+
+  - name: aedas
+    projects_url: https://www.aedas.com/en/architecture
+    adapter: architecture_scraper.adapters.sites.aedas:AedasAdapter
+    extractor: architecture_scraper.extractors.sites.aedas:AedasExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: royalhaskoningdhv
+    projects_url: https://www.royalhaskoningdhv.com/en/projects
+    adapter: architecture_scraper.adapters.sites.royalhaskoningdhv:RoyalHaskoningDhvAdapter
+    extractor: architecture_scraper.extractors.sites.royalhaskoningdhv:RoyalHaskoningDhvExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: nbbj
+    projects_url: https://www.nbbj.com/work
+    adapter: architecture_scraper.adapters.sites.nbbj:NbbjAdapter
+    extractor: architecture_scraper.extractors.sites.nbbj:NbbjExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: dpa
+    projects_url: https://www.dpa.com.sg/projects
+    adapter: architecture_scraper.adapters.sites.dpa:DpaAdapter
+    extractor: architecture_scraper.extractors.sites.dpa:DpaExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: woodsbagot
+    projects_url: https://www.woodsbagot.com/projects
+    adapter: architecture_scraper.adapters.sites.woodsbagot:WoodsBagotAdapter
+    extractor: architecture_scraper.extractors.sites.woodsbagot:WoodsBagotExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: imeg
+    projects_url: https://www.imegcorp.com/projects
+    adapter: architecture_scraper.adapters.sites.imeg:ImegAdapter
+    extractor: architecture_scraper.extractors.sites.imeg:ImegExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: bharchitects
+    projects_url: https://www.bharchitects.com/projects
+    adapter: architecture_scraper.adapters.sites.bharchitects:BhArchitectsAdapter
+    extractor: architecture_scraper.extractors.sites.bharchitects:BhArchitectsExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: stv
+    projects_url: https://www.stvinc.com/projects
+    adapter: architecture_scraper.adapters.sites.stv:StvAdapter
+    extractor: architecture_scraper.extractors.sites.stv:StvExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: mbakerintl
+    projects_url: https://www.mbakerintl.com/projects
+    adapter: architecture_scraper.adapters.sites.mbakerintl:MBakerIntlAdapter
+    extractor: architecture_scraper.extractors.sites.mbakerintl:MBakerIntlExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: carollo
+    projects_url: https://www.carollo.com/projects
+    adapter: architecture_scraper.adapters.sites.carollo:CarolloAdapter
+    extractor: architecture_scraper.extractors.sites.carollo:CarolloExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: safari
+
+  - name: hazenandsawyer
+    projects_url: https://www.hazenandsawyer.com/work
+    adapter: architecture_scraper.adapters.sites.hazenandsawyer:HazenAndSawyerAdapter
+    extractor: architecture_scraper.extractors.sites.hazenandsawyer:HazenAndSawyerExtractor
+    listing_render: never
+    detail_render: never
+    concurrency: 5
+    request_delay: 0.5
+    timeout: 90
+    impersonate: chrome
+
+  - name: bv
+    projects_url: https://www.bv.com/projects
+    adapter: architecture_scraper.adapters.sites.bv:BvAdapter
+    extractor: architecture_scraper.extractors.sites.bv:BvExtractor
     listing_render: never
     detail_render: never
     concurrency: 5
