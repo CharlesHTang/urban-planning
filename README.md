@@ -1,5 +1,7 @@
 # Architecture Scraper
 
+For a step-by-step guide to adding a firm, see [Adding a firm](ADDING_FIRMS.md).
+
 This package captures complete HTML pages and provides a shared layer for
 extracting structured project records from them. It assumes that the main
 projects-page URL is known for every website, while project detail URLs may not
