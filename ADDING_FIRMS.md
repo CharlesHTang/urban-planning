@@ -273,10 +273,12 @@ and every useful labeled fact actually present in the source. Do not
 guess missing values or use a short meta description when a longer
 body exists. Register the extractor in sites.yml and add focused tests
 using representative raw responses. Run the tests and then run
-`venv/bin/architecture-scraper extract sites.yml --site <site-name> --raw raw-pages -o extracted`.
+``.
 Compare the JSONL record count with the
 verified project pages, inspect every extraction error, and compare a
 few output records directly with their source files. Report any pages
 with missing or suspiciously short descriptions and fix selector gaps
 you can verify in the raw content.
 ```
+
+
